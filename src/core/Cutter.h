@@ -46,7 +46,8 @@ public:
 
     void initialize();
     void loadCutterRC();
-
+    QDir getCutterRCDefaultDirectory() const;
+    
     AsyncTaskManager *getAsyncTaskManager() { return asyncTaskManager; }
 
     RVA getOffset() const                   { return core_->offset; }
@@ -668,6 +669,7 @@ signals:
 
     void showMemoryWidgetRequested();
 
+
 private:
     QString notes;
 
@@ -695,6 +697,7 @@ private:
     R2TaskDialog *debugTaskDialog;
     
     QVector<QDir> getCutterRCDirectories() const;
+    
 };
 
 class RCoreLocked

@@ -1,0 +1,9 @@
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/install.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/list_install_components.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Radare2-Bundled.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/rebuild_cache.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/install/strip.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/install/local.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Cutter.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/edit_cache.dir
+/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Cutter_autogen.dir

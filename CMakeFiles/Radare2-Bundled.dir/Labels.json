@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Radare2-Bundled"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Radare2-Bundled.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/CMakeFiles/Radare2-Bundled-complete.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-install.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-mkdir.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-download.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-update.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-patch.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-configure.rule"
+		},
+		{
+			"file" : "/home/nirmal/Desktop/cutter/cutter/Radare2-Bundled-prefix/src/Radare2-Bundled-stamp/Radare2-Bundled-build.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"Radare2-Bundled"
+		],
+		"name" : "Radare2-Bundled"
+	}
+}

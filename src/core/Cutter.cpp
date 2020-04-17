@@ -229,6 +229,11 @@ RCoreLocked CutterCore::core()
     return RCoreLocked(this);
 }
 
+QDir CutterCore::getCutterRCDefaultDirectory() const
+{
+    return QDir::home();
+}
+
 QVector<QDir> CutterCore::getCutterRCDirectories() const
 {
     QVector<QDir> result;

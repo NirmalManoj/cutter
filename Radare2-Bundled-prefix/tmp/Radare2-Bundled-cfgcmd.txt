@@ -1,0 +1,1 @@
+cmd='/usr/bin/meson;<SOURCE_DIR>;--prefix=/home/nirmal/Desktop/cutter/cutter/Radare2-prefix;--libdir=lib;&&;/usr/bin/meson;configure;--prefix=/home/nirmal/Desktop/cutter/cutter/Radare2-prefix;--libdir=lib'
