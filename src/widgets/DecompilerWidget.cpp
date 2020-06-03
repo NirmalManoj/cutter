@@ -46,6 +46,7 @@ DecompilerWidget::DecompilerWidget(MainWindow *main) :
     });
 
     autoRefreshEnabled = Config()->getDecompilerAutoRefreshEnabled();
+    autoRefreshEnabled = true;
     ui->autoRefreshCheckBox->setChecked(autoRefreshEnabled);
     setAutoRefresh(autoRefreshEnabled);
     connect(ui->autoRefreshCheckBox, &QCheckBox::stateChanged, this, [this](int state) {
@@ -250,7 +251,7 @@ void DecompilerWidget::decompilationFinished(RAnnotatedCode *codeDecompiled)
     //     });
     // this->code.reset(codeDecompiled);
     auto deletter = [](RAnnotatedCode* ptrr){
-            r_annotated_code_free(ptrr);
+        r_annotated_code_free(ptrr);
     };
     this->code = std::unique_ptr<RAnnotatedCode, decltype(deletter)>(codeDecompiled, deletter);
     QString codeString = QString::fromUtf8(this->code->code);
