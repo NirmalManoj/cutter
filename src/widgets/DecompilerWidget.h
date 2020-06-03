@@ -56,8 +56,13 @@ private:
     bool decompilerWasBusy;
 
     RVA decompiledFunctionAddr;
-    std::unique_ptr<RAnnotatedCode> code;
-
+    // std::unique_ptr<RAnnotatedCode> code;
+    // std::unique_ptr<RAnnotatedCode, decltype(&r_annotated_code_free)> code;
+    std::unique_ptr<RAnnotatedCode, std::function<void(RAnnotatedCode*)>> code;
+    // std::unique_ptr<RAnnotatedCode, std::function<void(RAnnotatedCode*)>> code(RAnnotatedCode, [](RAnnotatedCode* ptrr)
+    //     {
+    //         r_annotated_code_free(ptrr);
+    //     });
     bool seekFromCursor = false;
 
     Decompiler *getCurrentDecompiler();
