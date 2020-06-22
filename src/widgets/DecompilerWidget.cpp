@@ -331,7 +331,6 @@ void DecompilerWidget::cursorPositionChanged()
     if (!ui->textEdit->textCursor().selectedText().isEmpty()) {
         return;
     }
-
     size_t pos = ui->textEdit->textCursor().position();
 
 
