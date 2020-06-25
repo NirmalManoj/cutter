@@ -306,15 +306,17 @@ void DecompilerWidget::cursorPositionChanged()
     }
 
     size_t pos = ui->textEdit->textCursor().position();
+    QTextCursor cursorForLine = ui->textEdit->textCursor();
     // Get the position of the start and end of line
-    connectCursorPositionChanged(true);
-    ui->textEdit->textCursor().movePosition(QTextCursor::StartOfLine);
-    size_t startPos = ui->textEdit->textCursor().position();
-    ui->textEdit->textCursor().movePosition(QTextCursor::EndOfLine);
+    // connectCursorPositionChanged(true);
+    cursorForLine.movePosition(QTextCursor::StartOfLine);
+    size_t startPos = cursorForLine.position();
+    cursorForLine.movePosition(QTextCursor::EndOfLine);
     size_t endPos = ui->textEdit->textCursor().position();
-    ui->textEdit->textCursor().setPosition(pos);
-    connectCursorPositionChanged(false);
-
+    // connectCursorPositionChanged(false);
+    mCtxMenu->start_pos = startPos;
+    mCtxMenu->end_pos = endPos;
+    
     mCtxMenu->setOffsetsInLine(getOffsetsList(*code, startPos, endPos));
 
     RVA offset = offsetForPosition(*code, pos);

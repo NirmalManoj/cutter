@@ -65,15 +65,33 @@ void DecompilerContextMenu::setShortcutContextInActions(QMenu *menu)
     }
 }
 
+void DecompilerContextMenu::getBreakpoints(){
+    this->availableBreakpoints.clear();
+    for(auto curOffset: this->offsetsInLine){
+        if(Core()->breakpointIndexAt(curOffset) > -1){
+            this->availableBreakpoints.push_back(curOffset);
+        }
+    }
+}
+
 void DecompilerContextMenu::aboutToShowSlot()
 {
     // Only show debug options if we are currently debugging
     debugMenu->menuAction()->setVisible(Core()->currentlyDebugging);
-    bool hasBreakpoint = Core()->breakpointIndexAt(offset) > -1;
-    actionAddBreakpoint.setText(hasBreakpoint ?
-                                tr("Remove breakpoint") : tr("Add breakpoint"));
+
+    getBreakpoints();
+    // bool hasBreakpoint = Core()->breakpointIndexAt(offset) > -1;
+    bool hasBreakpoint = !this->availableBreakpoints.isEmpty();
+    int numberOfBreakpoints = this->availableBreakpoints.size();
+    if(numberOfBreakpoints == 0){
+        actionAddBreakpoint.setText(tr("Add breakpoint %1").arg(this->start_pos));
+    }else if(numberOfBreakpoints == 1){
+        actionAddBreakpoint.setText(tr("Remove breakpoint %1").arg(this->start_pos));
+    }else{
+        actionAddBreakpoint.setText(tr("Remove all breakpoints"));
+    }
     actionAdvancedBreakpoint.setText(hasBreakpoint ?
-                                     tr("Edit breakpoint") : tr("Advanced breakpoint"));
+                                     tr("Edit breakpoint %1").arg(this->end_pos) : tr("Advanced breakpoint %1").arg(this->end_pos));
     QString progCounterName = Core()->getRegisterName("PC").toUpper();
     actionSetPC.setText(tr("Set %1 here").arg(progCounterName));
 }

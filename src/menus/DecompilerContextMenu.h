@@ -12,6 +12,9 @@ class DecompilerContextMenu : public QMenu
 public:
     DecompilerContextMenu(QWidget *parent, MainWindow *mainWindow);
     ~DecompilerContextMenu();
+    int start_pos;
+    int end_pos;
+
 
 signals:
     void copy();
@@ -34,9 +37,10 @@ private slots:
 
 private:
     void setShortcutContextInActions(QMenu *menu);
-
+    void getBreakpoints();
     RVA offset;
     QList<RVA> offsetsInLine;
+    QList<RVA> availableBreakpoints;
     MainWindow *mainWindow;
 
     QAction actionCopy;
