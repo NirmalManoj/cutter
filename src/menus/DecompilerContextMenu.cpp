@@ -69,27 +69,17 @@ void DecompilerContextMenu::setShortcutContextInActions(QMenu *menu)
     }
 }
 
-// void DecompilerContextMenu::getBreakpoints(){
-//     this->availableBreakpoints.clear();
-//     for(auto curOffset: this->offsetsInLine){
-//         if(Core()->breakpointIndexAt(curOffset) > -1){
-//             this->availableBreakpoints.push_back(curOffset);
-//         }
-//     }
-// }
-
 void DecompilerContextMenu::aboutToShowSlot()
 {
     // Only show debug options if we are currently debugging
     debugMenu->menuAction()->setVisible(Core()->currentlyDebugging);
 
-    // getBreakpoints();
     bool hasBreakpoint = !this->availableBreakpoints.isEmpty();
     int numberOfBreakpoints = this->availableBreakpoints.size();
     if(numberOfBreakpoints == 0){
-        actionToggleBreakpoint.setText(tr("Add breakpoint %1").arg(this->availableBreakpoints.size()));
+        actionToggleBreakpoint.setText(tr("Add breakpoint"));
     }else if(numberOfBreakpoints == 1){
-        actionToggleBreakpoint.setText(tr("Remove breakpoint %1").arg(this->start_pos));
+        actionToggleBreakpoint.setText(tr("Remove breakpoint"));
     }else{
         actionToggleBreakpoint.setText(tr("Remove all breakpoints"));
     }

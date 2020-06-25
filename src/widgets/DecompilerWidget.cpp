@@ -325,10 +325,8 @@ void DecompilerWidget::cursorPositionChanged()
             break;
         }
     }
-    mCtxMenu->start_pos = startPos;
-    mCtxMenu->end_pos = endPos;
-    // mCtxMenu->setOffsetsInLine(getOffsetsList(*code, startPos, endPos));
     setBreakpointInfo(*code, startPos, endPos);
+    
     RVA offset = offsetForPosition(*code, pos);
     if (offset != RVA_INVALID && offset != Core()->getOffset()) {
         seekFromCursor = true;

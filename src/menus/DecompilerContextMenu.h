@@ -12,8 +12,6 @@ class DecompilerContextMenu : public QMenu
 public:
     DecompilerContextMenu(QWidget *parent, MainWindow *mainWindow);
     ~DecompilerContextMenu();
-    int start_pos;
-    int end_pos;
 
 
 signals:
@@ -38,7 +36,6 @@ private slots:
 
 private:
     void setShortcutContextInActions(QMenu *menu);
-    void getBreakpoints();
     RVA offset;
     RVA firstOffsetInLine;
     QVector<RVA> availableBreakpoints;
