@@ -21,7 +21,8 @@ signals:
 
 public slots:
     void setOffset(RVA offset);
-    void setOffsetsInLine(QVector<RVA> offsetList);
+    void setAvailableBreakpoints(QVector<RVA> offsetList);
+    void setFirstOffsetInLine(RVA firstOffset);
     void setCanCopy(bool enabled);
 
 private slots:
@@ -39,7 +40,7 @@ private:
     void setShortcutContextInActions(QMenu *menu);
     void getBreakpoints();
     RVA offset;
-    QVector<RVA> offsetsInLine;
+    RVA firstOffsetInLine;
     QVector<RVA> availableBreakpoints;
     MainWindow *mainWindow;
 

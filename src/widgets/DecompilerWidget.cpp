@@ -140,31 +140,6 @@ void DecompilerWidget::updateRefreshButton()
     }
 }
 
-static QVector<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos)
-{
-    QSet<RVA> setOffsets;
-    void *annotationi;
-    r_vector_foreach(&codeDecompiled.annotations, annotationi) {
-        RCodeAnnotation *annotation = (RCodeAnnotation *)annotationi;
-        if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET) {
-            continue;
-        }
-        if(startPos <= annotation->start && annotation->start < endPos){
-            setOffsets.insert(annotation->offset.offset);
-        }else if(startPos <= annotation->end && annotation->end < endPos){
-            setOffsets.insert(annotation->offset.offset);
-        }
-    }
-    QVector<RVA> offsetList;//(setOffsets.toList().toVector());
-    for(auto tempOffset: setOffsets){
-        offsetList.push_back(tempOffset);
-    }
-    //Sort offsetList before returning.
-    std::sort(offsetList.begin(), offsetList.end());
-    return offsetList;
-}
-
-
 static ut64 offsetForPosition(RAnnotatedCode &codeDecompiled, size_t pos)
 {
     size_t closestPos = SIZE_MAX;
@@ -201,6 +176,34 @@ static size_t positionForOffset(RAnnotatedCode &codeDecompiled, ut64 offset)
         closestOffset = annotation->offset.offset;
     }
     return closestPos;
+}
+
+void DecompilerWidget::setBreakpointInfo(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos)
+{
+    RVA firstOffset = RVA_MAX;
+    void *annotationi;
+    r_vector_foreach(&codeDecompiled.annotations, annotationi) {
+        RCodeAnnotation *annotation = (RCodeAnnotation *)annotationi;
+        if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET) {
+            continue;
+        }
+        if(startPos <= annotation->start && annotation->start < endPos){
+            firstOffset = (annotation->offset.offset < firstOffset)?annotation->offset.offset:firstOffset;
+        }else if(startPos <= annotation->end && annotation->end < endPos){
+            firstOffset = (annotation->offset.offset < firstOffset)?annotation->offset.offset:firstOffset;
+        }
+    }
+    mCtxMenu->setFirstOffsetInLine(firstOffset);
+    QList<RVA> functionBreakpoints = Core()->getBreakpointsInFunction(decompiledFunctionAddr);
+    QVector<RVA> offsetList;
+    for(auto bpOffset: functionBreakpoints){
+        size_t pos = positionForOffset(*code, bpOffset);
+        if(startPos <= pos && pos <= endPos){
+            offsetList.push_back(bpOffset);
+        }
+    }
+    std::sort(offsetList.begin(), offsetList.end());
+    mCtxMenu->setAvailableBreakpoints(offsetList);
 }
 
 void DecompilerWidget::doRefresh(RVA addr)
@@ -314,11 +317,7 @@ void DecompilerWidget::cursorPositionChanged()
     // connectCursorPositionChanged(true);
     cursorForLine.movePosition(QTextCursor::StartOfBlock);
     size_t startPos = cursorForLine.position();
-    
-    if(!cursorForLine.movePosition(QTextCursor::NextBlock)){
-        cursorForLine.movePosition(QTextCursor::End);
-    }
-    size_t endPos = ui->textEdit->textCursor().position();
+    size_t endPos;
     auto &codeString = code->code;
     for(size_t i = startPos; ; i++){
         if(codeString[i]=='\n'){
@@ -326,12 +325,10 @@ void DecompilerWidget::cursorPositionChanged()
             break;
         }
     }
-    // connectCursorPositionChanged(false);
     mCtxMenu->start_pos = startPos;
     mCtxMenu->end_pos = endPos;
-    
-    mCtxMenu->setOffsetsInLine(getOffsetsList(*code, startPos, endPos));
-
+    // mCtxMenu->setOffsetsInLine(getOffsetsList(*code, startPos, endPos));
+    setBreakpointInfo(*code, startPos, endPos);
     RVA offset = offsetForPosition(*code, pos);
     if (offset != RVA_INVALID && offset != Core()->getOffset()) {
         seekFromCursor = true;

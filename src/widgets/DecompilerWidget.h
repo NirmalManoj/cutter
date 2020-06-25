@@ -99,6 +99,8 @@ private:
      */
     void highlightBreakpoints();
 
+    void setBreakpointInfo(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos);
+
 };
 
 #endif // DECOMPILERWIDGET_H
