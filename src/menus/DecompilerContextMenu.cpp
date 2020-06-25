@@ -84,7 +84,7 @@ void DecompilerContextMenu::aboutToShowSlot()
     bool hasBreakpoint = !this->availableBreakpoints.isEmpty();
     int numberOfBreakpoints = this->availableBreakpoints.size();
     if(numberOfBreakpoints == 0){
-        actionAddBreakpoint.setText(tr("Add breakpoint %1").arg(this->start_pos));
+        actionAddBreakpoint.setText(tr("Add breakpoint %1").arg(this->offsetsInLine.size()));
     }else if(numberOfBreakpoints == 1){
         actionAddBreakpoint.setText(tr("Remove breakpoint %1").arg(this->start_pos));
     }else{

@@ -149,9 +149,14 @@ static QList<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos
         if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET) {
             continue;
         }
-        if(annotation->start <= startPos && startPos < annotation->end){
+        // if(annotation->start <= startPos && startPos < annotation->end){
+        //     setOffsets.insert(annotation->offset.offset);
+        // }else if(annotation->start <= endPos && endPos < annotation->end){
+        //     setOffsets.insert(annotation->offset.offset);
+        // }
+        if(startPos <= annotation->start && annotation->start < endPos){
             setOffsets.insert(annotation->offset.offset);
-        }else if(annotation->start <= endPos && endPos < annotation->end){
+        }else if(startPos <= annotation->end && annotation->end < endPos){
             setOffsets.insert(annotation->offset.offset);
         }
     }
@@ -309,10 +314,20 @@ void DecompilerWidget::cursorPositionChanged()
     QTextCursor cursorForLine = ui->textEdit->textCursor();
     // Get the position of the start and end of line
     // connectCursorPositionChanged(true);
-    cursorForLine.movePosition(QTextCursor::StartOfLine);
+    cursorForLine.movePosition(QTextCursor::StartOfBlock);
     size_t startPos = cursorForLine.position();
-    cursorForLine.movePosition(QTextCursor::EndOfLine);
+    
+    if(!cursorForLine.movePosition(QTextCursor::NextBlock)){
+        cursorForLine.movePosition(QTextCursor::End);
+    }
     size_t endPos = ui->textEdit->textCursor().position();
+    auto &codeString = code->code;
+    for(size_t i = startPos; ; i++){
+        if(codeString[i]=='\n'){
+            endPos=i;
+            break;
+        }
+    }
     // connectCursorPositionChanged(false);
     mCtxMenu->start_pos = startPos;
     mCtxMenu->end_pos = endPos;
