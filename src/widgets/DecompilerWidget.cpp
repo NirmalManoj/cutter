@@ -140,6 +140,28 @@ void DecompilerWidget::updateRefreshButton()
     }
 }
 
+static QList<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos)
+{
+    QSet<RVA> setOffsets;
+    void *annotationi;
+    r_vector_foreach(&codeDecompiled.annotations, annotationi) {
+        RCodeAnnotation *annotation = (RCodeAnnotation *)annotationi;
+        if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET) {
+            continue;
+        }
+        if(annotation->start <= startPos && startPos < annotation->end){
+            setOffsets.insert(annotation->offset.offset);
+        }else if(annotation->start <= endPos && endPos < annotation->end){
+            setOffsets.insert(annotation->offset.offset);
+        }
+    }
+    QList<RVA> offsetList = setOffsets.toList();
+    //Sort offsetList before returning.
+    std::sort(offsetList.begin(), offsetList.end());
+    return offsetList;
+}
+
+
 static ut64 offsetForPosition(RAnnotatedCode &codeDecompiled, size_t pos)
 {
     size_t closestPos = SIZE_MAX;
@@ -147,7 +169,7 @@ static ut64 offsetForPosition(RAnnotatedCode &codeDecompiled, size_t pos)
     void *annotationi;
     r_vector_foreach(&codeDecompiled.annotations, annotationi) {
         RCodeAnnotation *annotation = (RCodeAnnotation *)annotationi;
-        if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET || annotation->start > pos) {
+        if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET || annotation->start > pos || annotation->end <= pos) {
             continue;
         }
         if (closestPos != SIZE_MAX && closestPos >= annotation->start) {
@@ -282,7 +304,19 @@ void DecompilerWidget::cursorPositionChanged()
     if (!ui->textEdit->textCursor().selectedText().isEmpty()) {
         return;
     }
+
     size_t pos = ui->textEdit->textCursor().position();
+    // Get the position of the start and end of line
+    connectCursorPositionChanged(true);
+    ui->textEdit->textCursor().movePosition(QTextCursor::StartOfLine);
+    size_t startPos = ui->textEdit->textCursor().position();
+    ui->textEdit->textCursor().movePosition(QTextCursor::EndOfLine);
+    size_t endPos = ui->textEdit->textCursor().position();
+    ui->textEdit->textCursor().setPosition(pos);
+    connectCursorPositionChanged(false);
+
+    mCtxMenu->setOffsetsInLine(getOffsetsList(*code, startPos, endPos));
+
     RVA offset = offsetForPosition(*code, pos);
     if (offset != RVA_INVALID && offset != Core()->getOffset()) {
         seekFromCursor = true;

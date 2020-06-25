@@ -43,6 +43,10 @@ void DecompilerContextMenu::setOffset(RVA offset)
     // this->actionSetFunctionVarTypes.setVisible(true);
 }
 
+void DecompilerContextMenu::setOffsetsInLine(QList<RVA> offsetList){
+    this->offsetsInLine = offsetList;
+}
+
 void DecompilerContextMenu::setCanCopy(bool enabled)
 {
     actionCopy.setVisible(enabled);

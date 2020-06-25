@@ -18,6 +18,7 @@ signals:
 
 public slots:
     void setOffset(RVA offset);
+    void setOffsetsInLine(QList<RVA> offsetList);
     void setCanCopy(bool enabled);
 
 private slots:
@@ -35,6 +36,7 @@ private:
     void setShortcutContextInActions(QMenu *menu);
 
     RVA offset;
+    QList<RVA> offsetsInLine;
     MainWindow *mainWindow;
 
     QAction actionCopy;
