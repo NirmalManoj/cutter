@@ -140,7 +140,7 @@ void DecompilerWidget::updateRefreshButton()
     }
 }
 
-static QList<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos)
+static QVector<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos, size_t endPos)
 {
     QSet<RVA> setOffsets;
     void *annotationi;
@@ -149,18 +149,16 @@ static QList<RVA> getOffsetsList(RAnnotatedCode &codeDecompiled, size_t startPos
         if (annotation->type != R_CODE_ANNOTATION_TYPE_OFFSET) {
             continue;
         }
-        // if(annotation->start <= startPos && startPos < annotation->end){
-        //     setOffsets.insert(annotation->offset.offset);
-        // }else if(annotation->start <= endPos && endPos < annotation->end){
-        //     setOffsets.insert(annotation->offset.offset);
-        // }
         if(startPos <= annotation->start && annotation->start < endPos){
             setOffsets.insert(annotation->offset.offset);
         }else if(startPos <= annotation->end && annotation->end < endPos){
             setOffsets.insert(annotation->offset.offset);
         }
     }
-    QList<RVA> offsetList = setOffsets.toList();
+    QVector<RVA> offsetList;//(setOffsets.toList().toVector());
+    for(auto tempOffset: setOffsets){
+        offsetList.push_back(tempOffset);
+    }
     //Sort offsetList before returning.
     std::sort(offsetList.begin(), offsetList.end());
     return offsetList;

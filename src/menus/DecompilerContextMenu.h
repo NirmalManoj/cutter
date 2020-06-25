@@ -21,7 +21,7 @@ signals:
 
 public slots:
     void setOffset(RVA offset);
-    void setOffsetsInLine(QList<RVA> offsetList);
+    void setOffsetsInLine(QVector<RVA> offsetList);
     void setCanCopy(bool enabled);
 
 private slots:
@@ -29,7 +29,7 @@ private slots:
 
     void actionCopyTriggered();
 
-    void actionAddBreakpointTriggered();
+    void actionToggleBreakpointTriggered();
     void actionAdvancedBreakpointTriggered();
 
     void actionContinueUntilTriggered();
@@ -39,15 +39,15 @@ private:
     void setShortcutContextInActions(QMenu *menu);
     void getBreakpoints();
     RVA offset;
-    QList<RVA> offsetsInLine;
-    QList<RVA> availableBreakpoints;
+    QVector<RVA> offsetsInLine;
+    QVector<RVA> availableBreakpoints;
     MainWindow *mainWindow;
 
     QAction actionCopy;
     QAction *copySeparator;
 
     QMenu *breakpointMenu;
-    QAction actionAddBreakpoint;
+    QAction actionToggleBreakpoint;
     QAction actionAdvancedBreakpoint;
 
     QMenu *debugMenu;
@@ -57,7 +57,7 @@ private:
     // Set actions
     void setActionCopy();
 
-    void setActionAddBreakpoint();
+    void setActionToggleBreakpoint();
     void setActionAdvancedBreakpoint();
 
     void setActionContinueUntil();

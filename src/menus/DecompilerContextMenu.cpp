@@ -15,7 +15,7 @@ DecompilerContextMenu::DecompilerContextMenu(QWidget *parent, MainWindow *mainWi
         offset(0),
         mainWindow(mainWindow),
         actionCopy(tr("Copy"), this),
-        actionAddBreakpoint(tr("Add/remove breakpoint"), this),
+        actionToggleBreakpoint(tr("Add/remove breakpoint"), this),
         actionAdvancedBreakpoint(tr("Advanced breakpoint"), this),
         actionContinueUntil(tr("Continue until line"), this),
         actionSetPC(tr("Set PC"), this)
@@ -43,8 +43,9 @@ void DecompilerContextMenu::setOffset(RVA offset)
     // this->actionSetFunctionVarTypes.setVisible(true);
 }
 
-void DecompilerContextMenu::setOffsetsInLine(QList<RVA> offsetList){
+void DecompilerContextMenu::setOffsetsInLine(QVector<RVA> offsetList){
     this->offsetsInLine = offsetList;
+    this->getBreakpoints();
 }
 
 void DecompilerContextMenu::setCanCopy(bool enabled)
@@ -80,15 +81,14 @@ void DecompilerContextMenu::aboutToShowSlot()
     debugMenu->menuAction()->setVisible(Core()->currentlyDebugging);
 
     getBreakpoints();
-    // bool hasBreakpoint = Core()->breakpointIndexAt(offset) > -1;
     bool hasBreakpoint = !this->availableBreakpoints.isEmpty();
     int numberOfBreakpoints = this->availableBreakpoints.size();
     if(numberOfBreakpoints == 0){
-        actionAddBreakpoint.setText(tr("Add breakpoint %1").arg(this->offsetsInLine.size()));
+        actionToggleBreakpoint.setText(tr("Add breakpoint %1").arg(this->offsetsInLine.size()));
     }else if(numberOfBreakpoints == 1){
-        actionAddBreakpoint.setText(tr("Remove breakpoint %1").arg(this->start_pos));
+        actionToggleBreakpoint.setText(tr("Remove breakpoint %1").arg(this->start_pos));
     }else{
-        actionAddBreakpoint.setText(tr("Remove all breakpoints"));
+        actionToggleBreakpoint.setText(tr("Remove all breakpoints"));
     }
     actionAdvancedBreakpoint.setText(hasBreakpoint ?
                                      tr("Edit breakpoint %1").arg(this->end_pos) : tr("Advanced breakpoint %1").arg(this->end_pos));
@@ -105,11 +105,11 @@ void DecompilerContextMenu::setActionCopy()
     actionCopy.setShortcut(QKeySequence::Copy);
 }
 
-void DecompilerContextMenu::setActionAddBreakpoint()
+void DecompilerContextMenu::setActionToggleBreakpoint()
 {
-    connect(&actionAddBreakpoint, &QAction::triggered, this,
-            &DecompilerContextMenu::actionAddBreakpointTriggered);
-    actionAddBreakpoint.setShortcuts({Qt::Key_F2, Qt::CTRL + Qt::Key_B});
+    connect(&actionToggleBreakpoint, &QAction::triggered, this,
+            &DecompilerContextMenu::actionToggleBreakpointTriggered);
+    actionToggleBreakpoint.setShortcuts({Qt::Key_F2, Qt::CTRL + Qt::Key_B});
 }
 
 void DecompilerContextMenu::setActionAdvancedBreakpoint()
@@ -137,9 +137,19 @@ void DecompilerContextMenu::actionCopyTriggered()
     emit copy();
 }
 
-void DecompilerContextMenu::actionAddBreakpointTriggered()
+void DecompilerContextMenu::actionToggleBreakpointTriggered()
 {
-    Core()->toggleBreakpoint(offset);
+    if(!this->availableBreakpoints.isEmpty()){
+        for(auto offsetToRemove: this->availableBreakpoints){
+            Core()->toggleBreakpoint(offsetToRemove);
+        }
+        this->availableBreakpoints.clear();
+        return;
+    }
+    if(this->offsetsInLine.isEmpty())
+        return;
+
+    Core()->toggleBreakpoint(this->offsetsInLine.first());
 }
 
 void DecompilerContextMenu::actionAdvancedBreakpointTriggered()
@@ -169,8 +179,8 @@ void DecompilerContextMenu::addBreakpointMenu()
 {
     breakpointMenu = addMenu(tr("Breakpoint"));
 
-    setActionAddBreakpoint();
-    breakpointMenu->addAction(&actionAddBreakpoint);
+    setActionToggleBreakpoint();
+    breakpointMenu->addAction(&actionToggleBreakpoint);
     setActionAdvancedBreakpoint();
     breakpointMenu->addAction(&actionAdvancedBreakpoint);
 }
