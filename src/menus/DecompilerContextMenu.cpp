@@ -43,11 +43,13 @@ void DecompilerContextMenu::setOffset(RVA offset)
     // this->actionSetFunctionVarTypes.setVisible(true);
 }
 
-void DecompilerContextMenu::setFirstOffsetInLine(RVA firstOffset){
+void DecompilerContextMenu::setFirstOffsetInLine(RVA firstOffset)
+{
     this->firstOffsetInLine = firstOffset;
 }
 
-void DecompilerContextMenu::setAvailableBreakpoints(QVector<RVA> offsetList){
+void DecompilerContextMenu::setAvailableBreakpoints(QVector<RVA> offsetList)
+{
     this->availableBreakpoints = offsetList;
 }
 
@@ -76,11 +78,11 @@ void DecompilerContextMenu::aboutToShowSlot()
 
     bool hasBreakpoint = !this->availableBreakpoints.isEmpty();
     int numberOfBreakpoints = this->availableBreakpoints.size();
-    if(numberOfBreakpoints == 0){
+    if (numberOfBreakpoints == 0) {
         actionToggleBreakpoint.setText(tr("Add breakpoint"));
-    }else if(numberOfBreakpoints == 1){
+    } else if (numberOfBreakpoints == 1) {
         actionToggleBreakpoint.setText(tr("Remove breakpoint"));
-    }else{
+    } else {
         actionToggleBreakpoint.setText(tr("Remove all breakpoints"));
     }
     actionAdvancedBreakpoint.setText(hasBreakpoint ?
@@ -132,14 +134,14 @@ void DecompilerContextMenu::actionCopyTriggered()
 
 void DecompilerContextMenu::actionToggleBreakpointTriggered()
 {
-    if(!this->availableBreakpoints.isEmpty()){
-        for(auto offsetToRemove: this->availableBreakpoints){
+    if (!this->availableBreakpoints.isEmpty()) {
+        for (auto offsetToRemove : this->availableBreakpoints) {
             Core()->toggleBreakpoint(offsetToRemove);
         }
         this->availableBreakpoints.clear();
         return;
     }
-    if(this->firstOffsetInLine == RVA_MAX)
+    if (this->firstOffsetInLine == RVA_MAX)
         return;
 
     Core()->toggleBreakpoint(this->firstOffsetInLine);
